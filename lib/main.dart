@@ -1,29 +1,42 @@
 import 'package:flutter/material.dart';
 
-void main() => runApp(MaterialApp(
-  home: Scaffold(
-    body: ListaTransferencias(),
-    appBar: AppBar(title: Text('Transferências'),),
-    floatingActionButton: FloatingActionButton(
-        onPressed: () {  },
-        child: Icon(Icons.add),
-    ),
-  ),
-));
+void main() => runApp(BytebBankApp());
+
+class FormularioTransferencia extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    // TODO: implement build
+    return Scaffold(
+
+      appBar: AppBar(
+        title: Text('Criando Transferência'),
+      ),
+      body: Text('texto2'),
+    );
+  }
+}
 
 class ListaTransferencias extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
-    return Column(
-      children: [
-        ItemTransferencia(Transferencia(100.0, 1001)),
-        ItemTransferencia(Transferencia(300.0, 1002)),
-        ItemTransferencia(Transferencia(600.0, 1003))
-      ],
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Transferências'),
+      ),
+      body: Column(
+        children: [
+          ItemTransferencia(Transferencia(100.0, 1001)),
+          ItemTransferencia(Transferencia(300.0, 1002)),
+          ItemTransferencia(Transferencia(600.0, 1003))
+        ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {},
+        child: Icon(Icons.add),
+      ),
     );
   }
-
 }
 
 class ItemTransferencia extends StatelessWidget {
@@ -42,7 +55,6 @@ class ItemTransferencia extends StatelessWidget {
       ),
     );
   }
-  
 }
 
 class Transferencia {
@@ -50,4 +62,17 @@ class Transferencia {
   final int numeroDaConta;
 
   Transferencia(this.valor, this.numeroDaConta);
+}
+
+class BytebBankApp extends StatelessWidget {
+  const BytebBankApp({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: Scaffold(
+        body: FormularioTransferencia(),
+      ),
+    );
+  }
 }
