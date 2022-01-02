@@ -1,8 +1,15 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 void main() => runApp(BytebBankApp());
 
 class FormularioTransferencia extends StatelessWidget {
+
+  final TextEditingController _controladorNumeroDaConta = TextEditingController();
+  final TextEditingController _controladorValor = TextEditingController();
+
+
+
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
@@ -13,8 +20,10 @@ class FormularioTransferencia extends StatelessWidget {
       body: Column(
         children: [
           Padding(
+
             padding: const EdgeInsets.all(16.0),
             child: TextField(
+              controller: _controladorNumeroDaConta,
               style: TextStyle(
                 fontSize: 24.0,
               ),
@@ -28,6 +37,7 @@ class FormularioTransferencia extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: TextField(
+              controller: _controladorValor,
               style: TextStyle(
                 fontSize: 24.0,
               ),
@@ -41,7 +51,16 @@ class FormularioTransferencia extends StatelessWidget {
           ),
 
           RaisedButton(
-            onPressed: () {  },
+            onPressed: () {
+              final int? numeroConta = int.tryParse(_controladorNumeroDaConta.text);
+              final double? valor = double.tryParse(_controladorValor.text);
+
+              if(numeroConta != null && valor != null) {
+                final transferenciaCriada = Transferencia(valor, numeroConta);
+                // debugPrint('$transferenciaCriada');
+              }
+
+            },
             child: Text('Confirmar'),
           ),
         ],
@@ -96,6 +115,11 @@ class Transferencia {
   final int numeroDaConta;
 
   Transferencia(this.valor, this.numeroDaConta);
+
+  @override
+  String toString() {
+    return 'Transferencia{valor: $valor, numeroDaConta: $numeroDaConta}';
+  }
 }
 
 class BytebBankApp extends StatelessWidget {
