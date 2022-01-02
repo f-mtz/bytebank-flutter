@@ -29,7 +29,7 @@ class FormularioTransferencia extends StatelessWidget {
               icone: Icons.monetization_on),
           RaisedButton(
             onPressed: () {
-              _criaTransferencia();
+              _criaTransferencia(context);
             },
             child: Text('Confirmar'),
           ),
@@ -38,14 +38,15 @@ class FormularioTransferencia extends StatelessWidget {
     );
   }
 
-  void _criaTransferencia() {
+  void _criaTransferencia(BuildContext context) {
     final int? numeroConta =
         int.tryParse(_controladorNumeroDaConta.text);
     final double? valor = double.tryParse(_controladorValor.text);
 
     if (numeroConta != null && valor != null) {
       final transferenciaCriada = Transferencia(valor, numeroConta);
-      debugPrint('$transferenciaCriada');
+      // debugPrint('$transferenciaCriada');
+      Navigator.pop(context, transferenciaCriada);
     }
   }
 }
@@ -66,7 +67,15 @@ class ListaTransferencias extends StatelessWidget {
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () {
+          final Future respostaAssincrona = Navigator.push(context, MaterialPageRoute(builder: (context) {
+            return FormularioTransferencia();
+          }));
+          
+          respostaAssincrona.then((transferenciaRecebida) {
+            debugPrint('$transferenciaRecebida');
+          });
+        },
         child: Icon(Icons.add),
       ),
     );
@@ -110,7 +119,7 @@ class BytebBankApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-        body: FormularioTransferencia(),
+        body: ListaTransferencias(),
       ),
     );
   }
