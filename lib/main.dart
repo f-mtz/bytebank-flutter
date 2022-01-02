@@ -4,11 +4,9 @@ import 'package:flutter/material.dart';
 void main() => runApp(BytebBankApp());
 
 class FormularioTransferencia extends StatelessWidget {
-
-  final TextEditingController _controladorNumeroDaConta = TextEditingController();
+  final TextEditingController _controladorNumeroDaConta =
+      TextEditingController();
   final TextEditingController _controladorValor = TextEditingController();
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -19,53 +17,36 @@ class FormularioTransferencia extends StatelessWidget {
       ),
       body: Column(
         children: [
-          Padding(
-
-            padding: const EdgeInsets.all(16.0),
-            child: TextField(
-              controller: _controladorNumeroDaConta,
-              style: TextStyle(
-                fontSize: 24.0,
-              ),
-              decoration: InputDecoration(
-                labelText: 'Número da conta',
-                hintText: '0000',
-              ),
-              keyboardType: TextInputType.number,
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: TextField(
-              controller: _controladorValor,
-              style: TextStyle(
-                fontSize: 24.0,
-              ),
-              decoration: InputDecoration(
-                icon: Icon(Icons.monetization_on),
-                labelText: 'Valor',
-                hintText: '0.00',
-              ),
-              keyboardType: TextInputType.number,
-            ),
-          ),
-
+          Editor(
+              controlador: _controladorNumeroDaConta,
+              rotulo: 'Número da Conta',
+              dica: '0000',),
+              // icone: Icons.person),
+          Editor(
+              controlador: _controladorValor,
+              rotulo: 'Value',
+              dica: '0000',
+              icone: Icons.monetization_on),
           RaisedButton(
             onPressed: () {
-              final int? numeroConta = int.tryParse(_controladorNumeroDaConta.text);
-              final double? valor = double.tryParse(_controladorValor.text);
-
-              if(numeroConta != null && valor != null) {
-                final transferenciaCriada = Transferencia(valor, numeroConta);
-                // debugPrint('$transferenciaCriada');
-              }
-
+              _criaTransferencia();
             },
             child: Text('Confirmar'),
           ),
         ],
       ),
     );
+  }
+
+  void _criaTransferencia() {
+    final int? numeroConta =
+        int.tryParse(_controladorNumeroDaConta.text);
+    final double? valor = double.tryParse(_controladorValor.text);
+
+    if (numeroConta != null && valor != null) {
+      final transferenciaCriada = Transferencia(valor, numeroConta);
+      debugPrint('$transferenciaCriada');
+    }
   }
 }
 
@@ -130,6 +111,37 @@ class BytebBankApp extends StatelessWidget {
     return MaterialApp(
       home: Scaffold(
         body: FormularioTransferencia(),
+      ),
+    );
+  }
+}
+
+class Editor extends StatelessWidget {
+  final TextEditingController controlador;
+  final String rotulo;
+  final String dica;
+  final IconData? icone;
+
+  Editor(
+      {required this.controlador,
+      required this.rotulo,
+      required this.dica, this.icone});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: TextField(
+        controller: controlador,
+        style: TextStyle(
+          fontSize: 24.0,
+        ),
+        decoration: InputDecoration(
+          icon: icone != null ? Icon(icone) : null,
+          labelText: rotulo,
+          hintText: dica,
+        ),
+        keyboardType: TextInputType.number,
       ),
     );
   }
