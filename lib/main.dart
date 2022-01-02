@@ -3,7 +3,14 @@ import 'package:flutter/material.dart';
 
 void main() => runApp(BytebBankApp());
 
-class FormularioTransferencia extends StatelessWidget {
+class FormularioTransferencia extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() {
+    return FormularioTransferenciaState();
+  }
+}
+
+class FormularioTransferenciaState extends State<FormularioTransferencia> {
   final TextEditingController _controladorNumeroDaConta =
       TextEditingController();
   final TextEditingController _controladorValor = TextEditingController();
@@ -15,32 +22,34 @@ class FormularioTransferencia extends StatelessWidget {
       appBar: AppBar(
         title: Text('Criando Transferência'),
       ),
-      body: Column(
-        children: [
-          Editor(
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            Editor(
               controlador: _controladorNumeroDaConta,
               rotulo: 'Número da Conta',
-              dica: '0000',),
-              // icone: Icons.person),
-          Editor(
-              controlador: _controladorValor,
-              rotulo: 'Value',
               dica: '0000',
-              icone: Icons.monetization_on),
-          RaisedButton(
-            onPressed: () {
-              _criaTransferencia(context);
-            },
-            child: Text('Confirmar'),
-          ),
-        ],
+            ),
+            // icone: Icons.person),
+            Editor(
+                controlador: _controladorValor,
+                rotulo: 'Value',
+                dica: '0000',
+                icone: Icons.monetization_on),
+            RaisedButton(
+              onPressed: () {
+                _criaTransferencia(context);
+              },
+              child: Text('Confirmar'),
+            ),
+          ],
+        ),
       ),
     );
   }
 
   void _criaTransferencia(BuildContext context) {
-    final int? numeroConta =
-        int.tryParse(_controladorNumeroDaConta.text);
+    final int? numeroConta = int.tryParse(_controladorNumeroDaConta.text);
     final double? valor = double.tryParse(_controladorValor.text);
 
     if (numeroConta != null && valor != null) {
@@ -51,29 +60,47 @@ class FormularioTransferencia extends StatelessWidget {
   }
 }
 
-class ListaTransferencias extends StatelessWidget {
+class ListaTransferencias extends StatefulWidget {
+  // final List<Transferencia> _transferencias = [];
+
+  @override
+  State<StatefulWidget> createState() {
+    return ListaTransferenciasState();
+  }
+}
+
+class ListaTransferenciasState extends State<ListaTransferencias> {
+  final List<Transferencia> _transferencias = [];
+
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return Scaffold(
       appBar: AppBar(
         title: Text('Transferências'),
       ),
-      body: Column(
-        children: [
-          ItemTransferencia(Transferencia(100.0, 1001)),
-          ItemTransferencia(Transferencia(300.0, 1002)),
-          ItemTransferencia(Transferencia(600.0, 1003))
-        ],
+      body: ListView.builder(
+        itemCount: _transferencias.length,
+        itemBuilder: (context, indice) {
+          final transferencia = _transferencias[indice];
+          return ItemTransferencia(transferencia);
+        },
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          final Future respostaAssincrona = Navigator.push(context, MaterialPageRoute(builder: (context) {
+          final Future respostaAssincrona =
+              Navigator.push(context, MaterialPageRoute(builder: (context) {
             return FormularioTransferencia();
           }));
-          
+
           respostaAssincrona.then((transferenciaRecebida) {
-            debugPrint('$transferenciaRecebida');
+            Future.delayed(Duration(seconds: 0), () {
+              debugPrint('$transferenciaRecebida');
+              if (transferenciaRecebida != null) {
+                setState(() {
+                  _transferencias.add(transferenciaRecebida);
+                });
+              }
+            });
           });
         },
         child: Icon(Icons.add),
@@ -134,7 +161,8 @@ class Editor extends StatelessWidget {
   Editor(
       {required this.controlador,
       required this.rotulo,
-      required this.dica, this.icone});
+      required this.dica,
+      this.icone});
 
   @override
   Widget build(BuildContext context) {
